@@ -16,7 +16,7 @@
                 </div>
             </div>
         </div>
-        <div class="w-full">
+        <div class="w-full" :class="bg">
             <div class="max-w-6xl mx-auto w-11/12 flex text-sm items-center justify-between h-12 md:w-full">
                 <div>
                     <p>Logo</p>
@@ -42,13 +42,13 @@
                         <li>
                             <RouterLink to="" class="hover:text-green-800 relative"><i class="ri-shopping-cart-2-line mr-2 text-base"></i> <span class="bg-green-800 px-1 text-xs absolute -top-2 left-3 text-white rounded-full">1</span><span class="hidden md:inline">cart</span></RouterLink>
                         </li>
-                        <li class="">
+                        <li v-if="!auth.getuser" class="">
                             <RouterLink to="" class="hover:text-green-800">login</RouterLink>
                         </li>
-                        <li>
+                        <li v-if="!auth.getuser">
                             <RouterLink to="" class="hover:text-green-800">register</RouterLink>
                         </li>
-                        <li class="hidden"><i class="ri-account-circle-fill text-sm"></i></li>
+                        <li v-if="auth.getuser" ><i class="ri-account-box-fill text-lg"></i></li>
                         <div class="space-y-0.5 transition-all md:hidden duration-500" @click="(openNav = !openNav)">
                             <div :class="openNav? 'ml-auto' : 'ml-0'" class="w-4 transition-all duration-500 rounded-xl h-1 bg-green-900"></div>
                             <div class="w-6 rounded-xl h-1 bg-green-900"></div>
@@ -76,9 +76,23 @@
 <script setup>
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router'
+import { userStore } from '@/stores/UserStore';
     
-
+    const auth = userStore()
     const openNav = ref(false)
+    const scrolled = ref(0)
+    const bg = ref('bg-transparent')
+
+    const handleScroll = ()=>{
+        scrolled.value = window.scrollY;
+        openNav.value = false;
+        if(scrolled.value > 70){
+            bg.value = `bg-white`
+        }else{
+            bg.value =`bg-transparent`
+        }
+    }
+    window.addEventListener('scroll', handleScroll);
 </script>
 
 <style lang="scss" scoped>
