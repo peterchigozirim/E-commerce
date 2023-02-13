@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="w-full" :class="bg">
-            <div class="max-w-6xl mx-auto w-11/12 flex text-sm items-center justify-between h-12 md:w-full">
+            <div class="max-w-6xl relative mx-auto w-11/12 flex text-sm items-center justify-between h-12 md:w-full">
                 <div>
                     <p>Logo</p>
                 </div>
@@ -43,16 +43,24 @@
                             <RouterLink to="" class="hover:text-green-800 relative"><i class="ri-shopping-cart-2-line mr-2 text-base"></i> <span class="bg-green-800 px-1 text-xs absolute -top-2 left-3 text-white rounded-full">1</span><span class="hidden md:inline">cart</span></RouterLink>
                         </li>
                         <li v-if="!auth.getuser" class="">
-                            <RouterLink to="" class="hover:text-green-800">login</RouterLink>
+                            <RouterLink to="/login" class="hover:text-green-800">login</RouterLink>
                         </li>
                         <li v-if="!auth.getuser">
-                            <RouterLink to="" class="hover:text-green-800">register</RouterLink>
+                            <RouterLink to="/register" class="hover:text-green-800">register</RouterLink>
                         </li>
-                        <li v-if="auth.getuser" ><i class="ri-account-box-fill text-lg"></i></li>
+                        <li @click="(openAccount = !openAccount)" v-if="auth.getuser" ><i class="ri-account-box-fill text-lg"></i></li>
                         <div class="space-y-0.5 transition-all md:hidden duration-500" @click="(openNav = !openNav)">
                             <div :class="openNav? 'ml-auto' : 'ml-0'" class="w-4 transition-all duration-500 rounded-xl h-1 bg-green-900"></div>
                             <div class="w-6 rounded-xl h-1 bg-green-900"></div>
                             <div :class="openNav? 'ml-0' : 'ml-auto'" class="w-4 transition-all duration-500 rounded-xl h-1 bg-green-900"></div>
+                        </div>
+                        <div :class="openAccount? 'w-44' : 'w-0'" class="overflow-hidden transition-all duration-500 rounded-b-md bg-white/80 backdrop-blur-sm absolute top-14 right-0">
+                            <ul class="w-full h-full space-y-1">
+                                <li class="p-2 hover:bg-green-800 hover:text-white">
+                                    <p>Profile</p>
+                                </li>
+                                <li @click="logout()" class="p-2 hover:bg-green-800 cursor-pointer hover:text-white"><p>Sign out</p></li>
+                            </ul>
                         </div>
                     </ul>
                 </div>
@@ -70,6 +78,11 @@
                 </div>
             </div>
         </div>
+        <div v-if="auth.loader" class="fixed h-screen w-full top-0 left flex bg-green-800/20 z-[100] items-center backdrop-blur-sm justify-center">
+            <div class="text-center">
+                <img src="/images/loader/loader.svg" alt="">
+            </div>
+      </div>
     </div>
 </template>
 
@@ -82,15 +95,22 @@ import { userStore } from '@/stores/UserStore';
     const openNav = ref(false)
     const scrolled = ref(0)
     const bg = ref('bg-transparent')
+    const openAccount = ref(false)
 
     const handleScroll = ()=>{
         scrolled.value = window.scrollY;
         openNav.value = false;
+        openAccount.value = false
         if(scrolled.value > 70){
-            bg.value = `bg-white`
+            bg.value = `bg-white/80 backdrop-blur-md`
         }else{
             bg.value =`bg-transparent`
         }
+    }
+
+    const logout = ()=>{
+        openAccount.value = false
+        auth.logoutUser()
     }
     window.addEventListener('scroll', handleScroll);
 </script>

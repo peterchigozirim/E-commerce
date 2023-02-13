@@ -7,7 +7,7 @@
         <div class="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
           <div v-for="product in products.productList" :key="product.id" class="group relative bg-white p-2">
             <div class="min-h-80 aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80">
-              <img :src="product.image" :alt="product.tittle" class="h-full bg-blend-normal w-full object-cover object-center lg:h-full lg:w-full" />
+              <img :src="product.image" @click="getProduct(product.id)" :alt="product.tittle" class="h-full bg-blend-normal w-full object-cover object-center lg:h-full lg:w-full" />
             </div>
             <div class="mt-4 space-y-4">
               <div>
@@ -30,6 +30,11 @@
           </div>
         </div>
       </div>
+      <div v-if="auth.loader" class="fixed h-screen w-full top-0 left flex bg-green-800/20 z-[100] items-center backdrop-blur-sm justify-center">
+        <div class="text-center">
+          <img src="/images/loader/loader.svg" alt="">
+        </div>
+      </div>
     </div>
   </template>
   
@@ -37,11 +42,15 @@
   import { ref, onMounted } from 'vue'
   import { RouterLink, useRouter } from 'vue-router'
   import { productStore } from '../../stores/ProductStore';
+  import { userStore } from '../../stores/UserStore';
 
+
+  const auth = userStore()
   const router = useRouter()
   const products = productStore()
 
   const getProduct = (id)=>{ 
+    // router.push({name: 'singleProduct'})
     products.getProductById(id)
   }
 

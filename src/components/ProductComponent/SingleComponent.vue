@@ -1,5 +1,5 @@
 <template>
-    <div class="py-32">
+    <!-- <div class="py-32">
         <div class="max-w-6xl mx-auto w-11/12 md:w-auto grid grid-cols-3 gap-8">
             <div class="rounded h-96">
                 <img :src="product.productData.image" :alt="product.productData.title" class="h-full w-full">
@@ -35,7 +35,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </template>
 
 <script setup>
@@ -48,19 +48,16 @@ import { userStore } from '../../stores/UserStore'
     const product = productStore()
     const userData = userStore()
     
-    onMounted(() => {
-        product.getProductById(router.currentRoute.value.params.id)
-    })
 
     const payment = () =>{
         if (userData.user == null) {
             router.push({name: 'login'})
         } else {
-            alert
+            alert(hi)
         }
     }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 
 </style>

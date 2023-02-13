@@ -3,18 +3,19 @@ import axios from 'axios'
 
 
 export const productStore = defineStore('productStore', {
-    state: ()=>{
-        return{
-            productList: null,
-            categories: null,
-            productData: null,
-            loader: false
-        }
+    state: ()=>({
+        productList: null,
+        categories: null,
+        productData: {},
+        loader: false
+    }),
+    getters:{
+        // getProductData:(state) => {return state.productData}
     },
     actions:{
-        fetchProdct(){
+        async fetchProdct(){
             try{
-                fetch('https://fakestoreapi.com/products')
+               await fetch('https://fakestoreapi.com/products')
                 .then(res=>res.json())
                 .then(json=>{
                     this.productList = json
@@ -25,15 +26,17 @@ export const productStore = defineStore('productStore', {
                 console.log(err);
             }
         },
-        getProductById(id){
+        async getProductById(id){
             this.loader = true
             try{
-                fetch(`https://fakestoreapi.com/products/${id}`)
+                await fetch(`https://fakestoreapi.com/products/${id}`)
                 .then(res=>res.json())
                 .then(json=>{
                     this.productData = json,
                     this.loader = false
-                    this.router.push( { name: 'singleProduct', params:{id}})
+                    console.log(json);
+                    this.router.push( { name: 'singleProduct'})
+                    console.log();
                 })
             }
             catch(err){

@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import SingleComponent from '../../components/ProductComponent/SingleComponent.vue';
+import SingleComponent from '@/components/ProductComponent/SingleComponent.vue';
 
 
 </script>

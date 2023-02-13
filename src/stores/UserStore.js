@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { auth } from '@/config/firebase'
-import { createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, sendEmailVerification, signOut } from "firebase/auth";
 
 export const userStore = defineStore('userStore', {
     state: ()=>({
@@ -17,9 +17,7 @@ export const userStore = defineStore('userStore', {
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     this.user = user
-                    if (user.emailVerified) {
-                        this.router.go()
-                    }else{
+                    if (!user.emailVerified) {
                         this.router.push({ name: 'verify'})
                     }
                 } else {
@@ -27,27 +25,52 @@ export const userStore = defineStore('userStore', {
                 }
             });
         },
-        registerUser(data){
+        async registerUser (data){
             this.loader = true
-            createUserWithEmailAndPassword(auth, data.email, data.password)
+            await createUserWithEmailAndPassword(auth, data.email, data.password)
                 .then((userCredential) => {
                     this.user = userCredential.user;
                     this.loader = false
-                    this.router.go
+                    this.router.go()
+                    userCredential.user.sendEmailVerification()
                 })
                 .catch((error) => {
-                    const errorCode = error.code;
                     const errorMessage = error.message;
-                    console.log(errorCode, errorMessage);
+                    console.log(errorMessage);
                     this.loader = false
                 });
         },
         verifyUser(){
             this.loader = true
             sendEmailVerification(auth.currentUser)
-            .then(() => {
+            .then((res) => {
+                console.log(res);
                this.loader = false
-            }).catch(error => this.loader = false)
+            }).catch(error => {
+                this.loader = false
+                console.log(error);
+            })
+        },
+        loginUser(data){
+            signInWithEmailAndPassword(auth, data.email, data.password)
+            .then((userCredential) => {
+                this.user = userCredential.user;
+                this.router.push({name: 'home'})
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorMessage)
+            });
+        },
+        logoutUser(){
+            this.loader = true
+            signOut(auth).then(() => {
+                this.user = null
+                this.loader = false
+            }).catch((error) => {
+                console.log(error)
+            });
         }
     }
 })

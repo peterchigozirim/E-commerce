@@ -16,15 +16,15 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/product/:id',
+      path: '/product',
       name: 'singleProduct',
       component: SingleProduct,
-      beforeEnter: (to, from) => {
-        const product = productStore()
-        if (product.productData == null && to.name !== 'home') {
-          return from
-        }
-      },
+      // beforeEnter: (to, from) => {
+      //   const product = productStore()
+      //   if (product.productData == null) {
+      //     return from
+      //   }
+      // },
     },
     {
       path: '/about',
@@ -41,17 +41,20 @@ const router = createRouter({
       name: 'register',
       component: Register
     },
-    {
-      path: '/verify-email',
-      name: 'verify',
-      component: Verify,
-      beforeEnter: (to, from) => {
-        const auth = userStore()
-        if (auth.getuser  == null && to.name !== 'verify') {
-          return from
-        }
-      },
-    }
+    // {
+    //   path: '/verify-email',
+    //   name: 'verify',
+    //   component: Verify,
+    //   beforeEnter: (to, from, ) => {
+    //     const auth = userStore()
+    //     if (auth.getuser == null && to.name == 'verify') {
+    //       return from
+    //     }
+    //     if(!auth.getuser.emailVerified == false){
+    //       return {name: 'home'}
+    //     }
+    //   },
+    // }
   ]
 })
 
